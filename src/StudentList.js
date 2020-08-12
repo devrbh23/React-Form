@@ -1,7 +1,11 @@
 import React, {useState, useEffect} from 'react';
-// import StudentDetail from './StudentDetail';
+import StudentDetail from './StudentDetail';
 
 function StudentList() {
+  const [students, setStudents] = useState({
+    isLoaded: false,
+    items: [],
+  });
   const [studentList, setStudentList] = useState([]);
   const [student, setStudent] = useState({
     course: '',
@@ -12,16 +16,17 @@ function StudentList() {
     roll: '',
     image: {value: ''},
   });
-  const name = e => {
+
+  const name = (e) => {
     setStudent({...student, [e.target.name]: e.target.value});
     console.log(e.target.value);
   };
-  const image = e => {
+  const image = (e) => {
     setStudent({...student, image: URL.createObjectURL(e.target.files[0])});
     console.log(e.target.files[0]);
   };
 
-  const button = e => {
+  const submitForm = (e) => {
     if (
       student.name === '' ||
       student.age === '' ||
@@ -48,20 +53,15 @@ function StudentList() {
     e.preventDefault();
   };
 
-  const courses = e => {
+  const courses = (e) => {
     setStudent({...student, course: e.currentTarget.value});
     console.log(e.currentTarget.value);
   };
 
-  const [students, setStudents] = useState({
-    isLoaded: false,
-    items: [],
-  });
-
   useEffect(() => {
     fetch('https://jsonplaceholder.typicode.com/users')
-      .then(res => res.json())
-      .then(json => {
+      .then((res) => res.json())
+      .then((json) => {
         setStudents({
           isLoaded: true,
           items: json,
@@ -164,54 +164,14 @@ function StudentList() {
           <input
             type="submit"
             value="Submit"
-            onClick={button}
+            onClick={submitForm}
             className="submit"
           />
         </div>
       </div>
       <div>
-        <div>
-          {items.map(item => (
-            <ul className="details">
-              <div>
-                <li key={item.name}>Name:{item.name}</li>
-                <li key={item.name}>address:{item.address.street}</li>
-              </div>
-            </ul>
-          ))}
-        </div>
-
-        {studentList.map(item => (
-          <div>
-            <div>{item.course}</div>
-            <ul className="detail">
-              <div>
-                <img className="image" src={item.image} alt=""></img>
-              </div>
-              <div>
-                <li>Name: {item.name}</li>
-                <li>Roll: {item.roll}</li>
-                <li>Address: {item.address}</li>
-                <li>Age: {item.age}</li>
-                <li>Sec: {item.sec}</li>
-              </div>
-            </ul>
-          </div>
-        ))}
+        <StudentDetail studentList={studentList} items={items}></StudentDetail>
       </div>
-      {/* 
-      // /
-      /
-      /
-      /
-      /
-      /
-      /
-      /
-      
-      
-      */}
-      {/* <StudentDetail /> */}
     </div>
   );
 }
